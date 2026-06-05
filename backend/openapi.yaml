@@ -1,0 +1,154 @@
+openapi: 3.0.3
+info:
+  title: Foboh Supplier Pricing API
+  version: 1.0.0
+  description: CRUD for bespoke pricing profiles and customer/product price resolution.
+servers:
+  - url: http://localhost:3001/api
+paths:
+  /products:
+    get:
+      summary: List and filter catalogue products
+      parameters:
+        - in: query
+          name: title
+          schema: { type: string }
+        - in: query
+          name: sku
+          schema: { type: string }
+        - in: query
+          name: subCategory
+          schema: { type: string }
+        - in: query
+          name: segment
+          schema: { type: string }
+        - in: query
+          name: brand
+          schema: { type: string }
+      responses:
+        '200':
+          description: Product list
+  /customers:
+    get:
+      summary: List customers
+      responses:
+        '200':
+          description: OK
+  /customer-groups:
+    get:
+      summary: List customer groups
+      responses:
+        '200':
+          description: OK
+  /pricing-profiles:
+    get:
+      summary: List pricing profiles
+      responses:
+        '200':
+          description: OK
+    post:
+      summary: Create pricing profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateProfile'
+      responses:
+        '201':
+          description: Created
+  /pricing-profiles/{id}:
+    get:
+      summary: Get profile by id
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: OK
+    put:
+      summary: Update profile
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateProfile'
+      responses:
+        '200':
+          description: OK
+    delete:
+      summary: Delete profile
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      responses:
+        '204':
+          description: Deleted
+  /pricing-profiles/preview:
+    post:
+      summary: Preview adjusted prices for selected products
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PreviewRequest'
+      responses:
+        '200':
+          description: Preview lines
+  /resolve-price:
+    get:
+      summary: Resolve final price for customer + product
+      parameters:
+        - in: query
+          name: customerId
+          required: true
+          schema: { type: string }
+        - in: query
+          name: productId
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: Resolution with winning profile and rationale
+components:
+  schemas:
+    CreateProfile:
+      type: object
+      required: [name, customerScope, productScope, mode, direction, value]
+      properties:
+        name: { type: string }
+        customerScope:
+          type: object
+          properties:
+            type: { enum: [group, customer] }
+            targetId: { type: string }
+        productScope:
+          type: object
+          properties:
+            type: { enum: [all, segment, subCategory, sku] }
+            value: { type: string }
+            productIds: { type: array, items: { type: string } }
+        adjustmentKind: { enum: [calculated, override] }
+        mode: { enum: [fixed, dynamic] }
+        direction: { enum: [increase, decrease] }
+        value: { type: number }
+        priority: { type: integer }
+    PreviewRequest:
+      type: object
+      required: [productIds, mode, direction, value]
+      properties:
+        productIds: { type: array, items: { type: string } }
+        adjustmentKind: { enum: [calculated, override] }
+        mode: { enum: [fixed, dynamic] }
+        direction: { enum: [increase, decrease] }
+        value: { type: number }
