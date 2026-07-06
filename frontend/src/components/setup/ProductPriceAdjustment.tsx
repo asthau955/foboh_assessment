@@ -46,7 +46,7 @@ function formatAdjustment(mode: AdjustmentMode, signed: number): string {
   return `${prefix}${abs}%`;
 }
 
-function parseAdjustment(raw: string): number | null {
+function parseAdjustment(raw: string, _mode: AdjustmentMode): number | null {
   const trimmed = raw.trim().replace(/\$/g, '').replace(/%/g, '');
   if (!trimmed) return null;
   const num = Number.parseFloat(trimmed);
@@ -87,8 +87,8 @@ export function ProductPriceAdjustment({
       .then((all) => {
         if (cancelled) return;
         const selected = all.filter((p) => selectedIds.has(p.id));
-        const { direction: d, value: v } = adjustmentRef.current;
-        const signed = signedAdjustment(d, v);
+        const { mode: m, direction: d, value: v } = adjustmentRef.current;
+        const signed = signedAdjustment(m, d, v);
         setRows(
           selected.map((product) => ({
             product,
@@ -106,12 +106,12 @@ export function ProductPriceAdjustment({
   }, [selectedKey]);
 
   useEffect(() => {
-    const signed = signedAdjustment(direction, value);
+    const signed = signedAdjustment(mode, direction, value);
     setRows((prev) => {
       if (prev.length === 0) return prev;
       return prev.map((row) => ({ ...row, signedAdjustment: signed }));
     });
-  }, [direction, value]);
+  }, [mode, direction, value]);
 
   useEffect(() => {
     if (!onChange) return;
@@ -126,7 +126,7 @@ export function ProductPriceAdjustment({
   }, [basedOn, mode, direction, value, rows, onChange]);
 
   const refreshTable = () => {
-    const signed = signedAdjustment(direction, value);
+    const signed = signedAdjustment(mode, direction, value);
     setRows((prev) =>
       prev.map((row) => (selectedIds.has(row.product.id) ? { ...row, signedAdjustment: signed } : row)),
     );
@@ -139,7 +139,7 @@ export function ProductPriceAdjustment({
   };
 
   const commitRowAdjustment = (id: string, raw: string) => {
-    const parsed = parseAdjustment(raw);
+    const parsed = parseAdjustment(raw, mode);
     if (parsed === null) return;
     setRows((prev) =>
       prev.map((row) => (row.product.id === id ? { ...row, signedAdjustment: parsed } : row)),

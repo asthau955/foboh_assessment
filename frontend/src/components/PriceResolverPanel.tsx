@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import type { Customer, PriceResolution, Product } from '../api';
 import { fetchCustomers, fetchProducts, resolvePrice } from '../api';
+import { PrecedenceRuleGuide } from './PrecedenceRuleGuide';
 
 export function PriceResolverPanel() {
   const [customers, setCustomers] = useState<Customer[]>([]);
@@ -40,7 +41,10 @@ export function PriceResolverPanel() {
   const customer = customers.find((c) => c.id === customerId);
 
   return (
-    <section className="panel">
+    <div className="price-resolver">
+      <PrecedenceRuleGuide />
+
+      <section className="panel">
       <h2>Price resolution (overlapping profiles)</h2>
       <p style={{ color: 'var(--muted)', marginTop: 0 }}>
         Try Bondi Cellars + Koyama Methode Brut Nature NV to see Profiles A, B, and C compete.
@@ -125,5 +129,6 @@ export function PriceResolverPanel() {
         </div>
       )}
     </section>
+    </div>
   );
 }

@@ -21,6 +21,7 @@ export function calculateAdjustedPrice(
 }
 
 export function signedAdjustment(
+  _mode: AdjustmentMode,
   direction: AdjustmentDirection,
   value: number,
 ): number {

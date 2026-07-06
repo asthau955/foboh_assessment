@@ -520,3 +520,62 @@ th {
   background: var(--surface-2);
   color: var(--muted);
 }
+
+.precedence-guide__lead {
+  margin: 0.35rem 0 1rem;
+  color: var(--muted);
+  max-width: 52rem;
+}
+
+.precedence-guide__steps {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.85rem;
+}
+
+.precedence-guide__step {
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg);
+}
+
+.precedence-guide__step h3 {
+  margin: 0 0 0.35rem;
+  font-size: 0.95rem;
+}
+
+.precedence-guide__step p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.precedence-guide__scores {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-top: 0.65rem;
+}
+
+.precedence-guide__score-label {
+  display: block;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  margin-bottom: 0.35rem;
+}
+
+.precedence-guide__step ul {
+  margin: 0;
+  padding-left: 1.1rem;
+  font-size: 0.88rem;
+  color: var(--text);
+}
+
+.price-resolver .panel h2 {
+  margin-top: 0;
+}
